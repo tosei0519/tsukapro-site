@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&family=Zen+Maru+Gothic:wght@500;700;900&display=swap">
-<link rel="stylesheet" href="css/style.css?v=5">
+<link rel="stylesheet" href="css/style.css?v=7">
 <script>
 document.documentElement.classList.add("js");
 try {
@@ -78,6 +78,8 @@ try {
       <div class="hero-stage reveal" data-delay="3" id="hero-logo">
         <div class="orb o1" aria-hidden="true"></div>
         <div class="orb o2" aria-hidden="true"></div>
+        <!-- PHOTO: 手元でブロックを「カチッ」とはめているアップ写真（縦長〜正方形）。assets/photos/hero-blocks.jpg に置くと、ロゴのカードの後ろに斜めに重なって表示されます。動画にする場合は hero-loop.mp4 -->
+        <figure class="ph ph-opt hero-photo" data-src="assets/photos/hero-blocks.jpg" data-video="assets/photos/hero-loop.mp4" data-alt="手元でブロックをカチッとはめている様子" data-note="PHOTO: 手元でブロックをはめるアップ"></figure>
         <div class="glass" id="glass">
           <img src="assets/logo.png" alt="つかプロのロゴ。オレンジと青のブロックがつながり、電球がひらめいている" width="520" height="520">
         </div>
@@ -130,21 +132,30 @@ try {
       <h2 class="section-title" data-fx="blur">最初の一歩は、<br>手の中にある。</h2>
       <p class="lead reveal" data-delay="2">コードの書き方を教える前に、「やってみたい！」と思える感動と自信を。つかプロは、プログラミング教育の入口になる教材です。</p>
       <div class="cards">
-        <article class="card tilt reveal">
+        <article class="card step tilt reveal">
+          <!-- PHOTO: 手元でブロックを並べている写真（横長 4:3）→ assets/photos/step1-hands.jpg -->
+          <figure class="ph step-ph" data-src="assets/photos/step1-hands.jpg" data-alt="手元でブロックを並べている様子" data-note="PHOTO: 手元でブロックを組む">
+            <div class="fb o"><svg class="ico" viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="22" width="48" height="32" rx="8" fill="#f7931e"/><rect x="14" y="14" width="14" height="10" rx="3" fill="#f7931e"/><rect x="36" y="14" width="14" height="10" rx="3" fill="#f7931e"/><rect x="8" y="48" width="48" height="6" rx="3" fill="#d9740f"/></svg></div>
+          </figure>
           <span class="chip o">STEP 1</span>
-          <svg class="ico" viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="22" width="48" height="32" rx="8" fill="#f7931e"/><rect x="14" y="14" width="14" height="10" rx="3" fill="#f7931e"/><rect x="36" y="14" width="14" height="10" rx="3" fill="#f7931e"/><rect x="8" y="48" width="48" height="6" rx="3" fill="#d9740f"/></svg>
           <h3>ブロックを並べる</h3>
           <p>画面を開く前に、まず手を動かします。ブロックを並べることが、そのままプログラムになります。</p>
         </article>
-        <article class="card tilt reveal" data-delay="1">
+        <article class="card step tilt reveal" data-delay="1">
+          <!-- PHOTO: ロボットが走っている・動いている写真（横長 4:3）→ assets/photos/step2-robot.jpg -->
+          <figure class="ph step-ph" data-src="assets/photos/step2-robot.jpg" data-alt="並べた通りに動くロボット" data-note="PHOTO: ロボットが動いている">
+            <div class="fb b"><svg class="ico" viewBox="0 0 64 64" aria-hidden="true"><rect x="14" y="20" width="36" height="28" rx="8" fill="#5bc2e7"/><circle cx="26" cy="34" r="4" fill="#fff"/><circle cx="38" cy="34" r="4" fill="#fff"/><rect x="29" y="10" width="6" height="10" rx="3" fill="#3ea5cf"/><circle cx="32" cy="9" r="4" fill="#f7931e"/><rect x="8" y="52" width="48" height="6" rx="3" fill="#3ea5cf"/></svg></div>
+          </figure>
           <span class="chip b">STEP 2</span>
-          <svg class="ico" viewBox="0 0 64 64" aria-hidden="true"><rect x="14" y="20" width="36" height="28" rx="8" fill="#5bc2e7"/><circle cx="26" cy="34" r="4" fill="#fff"/><circle cx="38" cy="34" r="4" fill="#fff"/><rect x="29" y="10" width="6" height="10" rx="3" fill="#3ea5cf"/><circle cx="32" cy="9" r="4" fill="#f7931e"/><rect x="8" y="52" width="48" height="6" rx="3" fill="#3ea5cf"/></svg>
           <h3>ロボットが動く</h3>
           <p>自分が並べた通りに、ロボットが動きます。「なぜ動くのか」が目で見て、手で触れて分かります。</p>
         </article>
-        <article class="card tilt reveal" data-delay="2">
+        <article class="card step tilt reveal" data-delay="2">
+          <!-- PHOTO: 子どもがロボットの動きを見て「できた！」と喜ぶ写真（横長 4:3）。顔が写る場合は本人と保護者の了解を取る → assets/photos/step3-smile.jpg -->
+          <figure class="ph step-ph" data-src="assets/photos/step3-smile.jpg" data-alt="「できた！」と喜ぶ子ども" data-note="PHOTO: 「できた！」と喜ぶ表情">
+            <div class="fb o"><svg class="ico" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8c-9 0-16 7-16 15 0 6 3 9 6 13 2 3 3 5 3 8h14c0-3 1-5 3-8 3-4 6-7 6-13 0-8-7-15-16-15z" fill="#f7931e"/><rect x="25" y="48" width="14" height="5" rx="2.5" fill="#6b7b86"/><rect x="27" y="55" width="10" height="4" rx="2" fill="#4b4f55"/></svg></div>
+          </figure>
           <span class="chip o">STEP 3</span>
-          <svg class="ico" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8c-9 0-16 7-16 15 0 6 3 9 6 13 2 3 3 5 3 8h14c0-3 1-5 3-8 3-4 6-7 6-13 0-8-7-15-16-15z" fill="#f7931e"/><rect x="25" y="48" width="14" height="5" rx="2.5" fill="#6b7b86"/><rect x="27" y="55" width="10" height="4" rx="2" fill="#4b4f55"/></svg>
           <h3>次の学びへ</h3>
           <p>最初の「できた！」を体験したら、ScratchやPythonも楽しく学べる。先生も子どもたちも、一緒に。</p>
         </article>
@@ -202,31 +213,42 @@ try {
       <p class="lead reveal" data-delay="2">今の小学校のプログラミング教育には、苦手意識の定着、先生の負担の増加、ICT環境や教材の格差といった課題があります。</p>
       <p class="lead reveal" data-delay="3">私たちも最初から得意だったわけではありません。画面の中でブロックを並べても、「なぜこれで動くのか」が分からなかった。でも、自分で組み立てたロボットが思った通りに動いたとき、プログラミングが面白くなりました。高校生だからこそ、子どもたちに近い目線で入口をつくれると考えています。</p>
     </div>
+    <div class="wrap dev" id="dev">
+      <p class="label reveal">開発のようす</p>
+      <div class="dev-gallery" data-gallery>
+        <!-- PHOTO: 3Dプリンターで部品を出力している様子 → assets/photos/dev-printing.jpg -->
+        <figure class="ph dev-a reveal" data-src="assets/photos/dev-printing.jpg" data-alt="3Dプリンターで部品を出力している様子" data-note="PHOTO: 3Dプリンターで出力中"><figcaption>3Dプリンターで、部品を出力。</figcaption></figure>
+        <!-- PHOTO: メンバー3人が机に回路・PCを広げて開発している様子 → assets/photos/dev-desk.jpg -->
+        <figure class="ph dev-b reveal" data-delay="1" data-src="assets/photos/dev-desk.jpg" data-alt="机に回路とPCを広げて開発している3人" data-note="PHOTO: 机に回路とPCを広げて開発"><figcaption>回路とPCを広げて、3人で開発。</figcaption></figure>
+        <!-- PHOTO: 完成した部品・ロボットのアップ → assets/photos/dev-parts.jpg -->
+        <figure class="ph dev-c reveal" data-delay="2" data-src="assets/photos/dev-parts.jpg" data-alt="完成した部品とロボット" data-note="PHOTO: 完成した部品のアップ"><figcaption>形になった、ロボットの部品。</figcaption></figure>
+      </div>
+    </div>
   </section>
 
-  <!-- Record: bento grid -->
+  <!-- Record: bento grid。各カードに data-src の写真を置くと、カードの背景に表示されます（assets/photos/rec-*.jpg） -->
   <section class="light record" id="record">
     <div class="wrap">
       <p class="label reveal">実績</p>
       <h2 class="section-title" data-fx="blur">ものづくりで、<br>挑戦してきた。</h2>
       <div class="bento">
-        <article class="bx wro reveal">
+        <article data-src="assets/photos/rec-wro.jpg" data-note="PHOTO: WRO全国大会の様子" class="bx wro reveal">
           <p class="k">WRO（World Robot Olympiad）</p>
           <p class="num"><span data-count="3">0</span><small>年間</small></p>
           <p class="d">2024年から2026年にかけて、全国大会に出場しました。</p>
           <svg class="deco" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" fill="none" stroke="currentColor" stroke-width="6" stroke-dasharray="10 8"/><circle cx="60" cy="60" r="28" fill="currentColor" opacity=".25"/></svg>
         </article>
-        <article class="bx intl reveal" data-delay="1">
+        <article data-src="assets/photos/rec-intl.jpg" data-note="PHOTO: 国際大会（フィリピン）の様子" class="bx intl reveal" data-delay="1">
           <p class="k">国際大会</p>
           <p class="num sm">PHILIPPINES</p>
           <p class="d">WRO OPEN CHAMPIONSHIP APAC PHILIPPINES に出場しました。</p>
         </article>
-        <article class="bx dig reveal" data-delay="2">
+        <article data-src="assets/photos/rec-digital.jpg" data-note="PHOTO: 表彰・作品" class="bx dig reveal" data-delay="2">
           <p class="k">熊本デジタル作品コンテスト</p>
           <p class="num sm">総合<br>準グランプリ</p>
           <p class="d">「ユニガチャ」で受賞。</p>
         </article>
-        <article class="bx robo reveal" data-delay="3">
+        <article data-src="assets/photos/rec-robo.jpg" data-note="PHOTO: 全国大会の様子" class="bx robo reveal" data-delay="3">
           <p class="k">創造アイデアロボットコンテスト</p>
           <p class="num sm">全国大会<br>出場</p>
           <p class="d">アイデアを形にしたロボットで。</p>
@@ -236,7 +258,7 @@ try {
           <p class="num sm">デジタル × アナログ</p>
           <p class="d">中学生の頃からロボット製作に取り組み、デジタルとアナログの融合をテーマに進めてきたプロジェクトです。</p>
         </article>
-        <article class="bx ippo reveal" data-delay="1">
+        <article data-src="assets/photos/rec-ippo.jpg" data-note="PHOTO: IPPO発表会・プレゼンの様子" class="bx ippo reveal" data-delay="1">
           <p class="k">そして、つかプロ</p>
           <p class="num sm">IPPO 採択</p>
           <p class="d">熊本版未踏的プロジェクト IPPO に採択。子どもたちの「できた！」をつくります。</p>
@@ -313,8 +335,9 @@ try {
   </div>
 </footer>
 
-<script src="js/main.js?v=5"></script>
-<script src="js/textfx.js?v=5"></script>
-<script type="module" src="js/robot3d.js?v=5"></script>
+<script src="js/main.js?v=7"></script>
+<script src="js/textfx.js?v=7"></script>
+<script src="js/photos.js?v=7"></script>
+<script type="module" src="js/robot3d.js?v=7"></script>
 </body>
 </html>
