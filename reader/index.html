@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>つかプロ ブロック読み取り</title>
+<link rel="icon" href="../assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Maru+Gothic:wght@700;900&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="reader.css">
+</head>
+<body>
+<header class="top">
+  <img src="../assets/logo-mark.png" alt="" width="36" height="36">
+  <h1>ブロック読み取り</h1>
+  <a href="../">公式サイトへ</a>
+</header>
+
+<main class="layout">
+  <section class="view" aria-label="カメラ映像">
+    <div class="stage" id="stage">
+      <video id="video" playsinline muted hidden></video>
+      <img id="sample" alt="" hidden>
+      <canvas id="shot"></canvas>
+      <canvas id="overlay"></canvas>
+      <p class="placeholder" id="placeholder">「カメラを始める」か「サンプル画像」を押してください</p>
+    </div>
+    <div class="row">
+      <button class="btn main" id="btn-cam" type="button">カメラを始める</button>
+      <button class="btn" id="btn-sample" type="button">サンプル画像</button>
+      <select id="cams" aria-label="カメラの選択" hidden></select>
+      <label class="chk"><input type="checkbox" id="show-mask"> 色の抜き出しを見る</label>
+    </div>
+    <p class="msg" id="cam-msg" role="status"></p>
+  </section>
+
+  <section class="side">
+    <div class="card">
+      <h2>読み取り結果</h2>
+      <p class="sub">上から順に読みます。</p>
+      <ol class="chips" id="program" aria-live="polite"><li class="empty">まだ読めていません</li></ol>
+      <div class="row">
+        <button class="btn" id="btn-learn" type="button">この4つを覚える</button>
+        <button class="btn main" id="btn-sim" type="button">動かして確かめる</button>
+      </div>
+      <p class="sub" id="learn-msg">「覚える」は、上から 後ろ・右・前・左 の順に4つ並べて押します。</p>
+    </div>
+
+    <div class="card">
+      <h2>ロボットの動き（見本）</h2>
+      <canvas id="sim" width="360" height="360" aria-label="ロボットの動きの見本"></canvas>
+      <p class="sub">前＝1マス進む、後ろ＝1マス戻る、右・左＝その場で90度まわる、と仮に決めています。</p>
+    </div>
+
+    <div class="card">
+      <h2>ロボットに送る（Bluetooth）</h2>
+      <div class="row">
+        <button class="btn" id="btn-ble" type="button">ロボットにつなぐ</button>
+        <button class="btn main" id="btn-send" type="button" disabled>送る</button>
+      </div>
+      <p class="msg" id="ble-msg" role="status"></p>
+      <details>
+        <summary>つなぎ方の設定</summary>
+        <label class="f">サービスUUID<input id="svc" value="6e400001-b5a3-f393-e0a9-e50e24dcca9e"></label>
+        <label class="f">書き込むUUID<input id="chr" value="6e400002-b5a3-f393-e0a9-e50e24dcca9e"></label>
+        <p class="sub">送る文字：前=F　後ろ=B　右=R　左=L をつなげて、最後に改行。例：<code>BRFL</code></p>
+      </details>
+    </div>
+
+    <details class="card">
+      <summary>色と向きの調整</summary>
+      <label class="f">色あい（最小）<input type="range" id="h-min" min="0" max="60" value="16"><output id="o-hmin">16</output></label>
+      <label class="f">色あい（最大）<input type="range" id="h-max" min="0" max="60" value="44"><output id="o-hmax">44</output></label>
+      <label class="f">こさ（最小）<input type="range" id="s-min" min="0" max="100" value="50"><output id="o-smin">50</output></label>
+      <label class="f">明るさ（最小）<input type="range" id="v-min" min="0" max="100" value="40"><output id="o-vmin">40</output></label>
+      <label class="f">画面の回転
+        <select id="rot"><option value="0">0度</option><option value="90">90度</option><option value="180">180度</option><option value="270">270度</option></select>
+      </label>
+    </details>
+  </section>
+</main>
+<script src="reader.js"></script>
+</body>
+</html>
