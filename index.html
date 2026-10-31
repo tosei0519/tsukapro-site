@@ -171,7 +171,7 @@ try {
           <button type="button" id="z-in" aria-label="拡大">＋</button>
           <button type="button" id="z-out" aria-label="縮小">－</button>
           <button type="button" id="z-reset" aria-label="もとに戻す">⟲</button>
-          <button type="button" id="xray" aria-pressed="false" aria-label="内部を見る" title="外装を透かして、中の基板を見る">内部</button>
+          <button type="button" id="xray" aria-pressed="false" aria-label="内部を見る" title="外装を透かして、中の基板や電池を見る">内部</button>
         </div>
       </div>
       <div class="parts-copy">
@@ -183,7 +183,9 @@ try {
           <li><button type="button" data-i="2"><i style="background:#e8eaee"></i>モーターキャップ</button></li>
           <li><button type="button" data-i="3"><i style="background:#d9740f"></i>電池ふた</button></li>
           <li><button type="button" data-i="4"><i style="background:#2b3a4a"></i>バイザー</button></li>
-          <li><button type="button" data-i="5"><i style="background:#1f8f5f"></i>基板</button></li>
+          <li><button type="button" data-i="5"><i style="background:#1f8f5f"></i>基板・マイコン</button></li>
+          <li><button type="button" data-i="6"><i style="background:#c8b560"></i>電池</button></li>
+          <li><button type="button" data-i="7"><i style="background:#c0c6cc"></i>モーター・タイヤ</button></li>
         </ul>
         <div class="part-info" id="part-info" aria-live="polite">部品の名前を押すと、その部品が光ります。</div>
       </div>
@@ -317,6 +319,6 @@ try {
 
 <script src="js/main.js?v=8"></script>
 <script src="js/textfx.js?v=8"></script>
-<script type="module" src="js/robot3d.js?v=9"></script>
+<script type="module" src="js/robot3d.js?v=11"></script>
 </body>
 </html>
