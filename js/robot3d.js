@@ -1,4 +1,4 @@
-// ロボットの全パーツ（外装5つ＋基板）が、スクロールで「ばらばら → 分解図 → 1台に組み上がる」。
+// ロボットの全パーツ（外装・基板・マイコン・電池・モーター・タイヤ）が、スクロールで「ばらばら → 分解図 → 1台に組み上がる」。
 // 部品名を押すと光る。ドラッグで回転、ボタン／Ctrl+ホイール／ピンチでズーム。「内部」で外装を透かす。
 import * as THREE from "three";
 import { STLLoader } from "three/addons/loaders/STLLoader.js";
@@ -7,21 +7,29 @@ const section = document.getElementById("parts");
 const canvas = document.getElementById("robot");
 if (section && canvas) init().catch(() => { section.hidden = true; });
 
-/* 組み上がったときの位置（mm）。
-   x,y は印刷データの位置をそのまま使っています。
-   基板の位置は、基板の取り付け穴（直径2.2mm）が、シャーシの2本のピン（x=-21 と 23.5）と一致することから決めた確かな値です。
-   高さ(z)は印刷データから失われているため、重ね方は「推定」です。実機と違うときは、ここの数字を変えてください。
-   z = その部品の下面の高さ。flip = 上下をひっくり返して取り付ける。 */
-const ASSEMBLY = {
-  "1_chassis.stl":     { z: 0 },                    // 土台（脚が下、板が上）。上面は z=21.5、ピンは z=25.7 まで
-  "3_motor_cap.stl":   { z: 15.5 },                 // 土台の下側、中央
-  pcb:                 { z: 21.5, x: 0, y: -25.8 }, // 基板：土台の板の上。ピン2本が穴を貫く（確かな位置）
-  "2_cover.stl":       { z: 23.6 },                 // 上の板（基板の上）。柱は上向き
-  "4_battery_lid.stl": { z: 48.1 },                 // 電池ふた（カバーの柱の上）
-  "5_visor.stl":       { z: 50.1 }                  // バイザー
-};
-// 分解図のとき、組み上がりの位置から、上下にどれだけ離すか（mm）
-const EXPLODE = { "3_motor_cap.stl": -85, "1_chassis.stl": -48, pcb: 4, "2_cover.stl": 42, "4_battery_lid.stl": 88, "5_visor.stl": 124 };
+/* 3Dデータ（assets/model/asm/*.stl）は、すべて「組み上がった位置」のまま書き出したもの（mm、z が上、+y が前）。
+   なので、組み立ての位置は、データの座標そのままです。基板だけは、外形と文字の絵から作っています（位置は同じ）。
+   explode = 分解図のとき、上下にどれだけ離すか（mm）。delay = 組み上がる順番（小さいほど先）。 */
+const PARTS = [
+  { name: "シャーシ", css: "#f7931e", explode: 0, delay: 0,
+    meshes: [{ f: "chassis", color: 0x4a5160 }], shell: true },
+  { name: "カバー", css: "#5bc2e7", explode: 64, delay: 0.42,
+    meshes: [{ f: "cover", color: 0xf4f4f2 }], shell: true },
+  { name: "モーターキャップ", css: "#e8eaee", explode: 18, delay: 0.26,
+    meshes: [{ f: "motorcap", color: 0x6a7080 }], shell: true },
+  { name: "電池ふた", css: "#d9740f", explode: -46, delay: 0.12,
+    meshes: [{ f: "lid", color: 0xf7901e }], shell: true },
+  { name: "バイザー", css: "#2b3a4a", explode: 64, delay: 0.5,
+    meshes: [{ f: "visor", color: 0x2b3038 }], shell: true },
+  { name: "基板・マイコン", css: "#1f8f5f", explode: 34, delay: 0.32,
+    pcb: true,
+    meshes: [{ f: "tb6612", color: 0x2c4e8c }, { f: "xiao", color: 0x555c66 }, { f: "switch", color: 0xd0d0d0 }] },
+  { name: "電池", css: "#c8b560", explode: -22, delay: 0.06,
+    meshes: [{ f: "batbox", color: 0x2a2c30 }, { f: "battery", color: 0xc8b560 }] },
+  { name: "モーター・タイヤ", css: "#c0c6cc", explode: -14, delay: 0.02,
+    meshes: [{ f: "motor", color: 0xc0c6cc }, { f: "tire", color: 0x34363c }] }
+];
+const PCB_AT = { x: 0, y: -25.85, z: 40.0 }; // 基板の中心（データのとおり）
 
 async function init() {
   const reduce = document.documentElement.dataset.motion === "reduce";
@@ -31,82 +39,64 @@ async function init() {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(32, 1, 1, 3000);
 
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x3a4458, 1.25));
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x3a4458, 1.35));
   const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(120, 180, 160); scene.add(key);
   const rim = new THREE.DirectionalLight(0x5bc2e7, 1.4); rim.position.set(-160, 60, -120); scene.add(rim);
 
-  const defs = [
-    { id: "1_chassis.stl", name: "シャーシ", color: 0xf7931e },
-    { id: "2_cover.stl", name: "カバー", color: 0x5bc2e7 },
-    { id: "3_motor_cap.stl", name: "モーターキャップ", color: 0xe8eaee },
-    { id: "4_battery_lid.stl", name: "電池ふた", color: 0xd9740f },
-    { id: "5_visor.stl", name: "バイザー", color: 0x2b3a4a },
-    { id: "pcb", name: "基板", color: 0x1f8f5f }
-  ];
   const group = new THREE.Group();
   scene.add(group);
   const loader = new STLLoader();
   const baseMat = (color) => new THREE.MeshStandardMaterial({ color, roughness: 0.42, metalness: 0.08, transparent: true, opacity: 1, emissive: 0xf7931e, emissiveIntensity: 0 });
-
-  // ---- 外装（STL） ----
-  const stl = await Promise.all(defs.slice(0, 5).map((d) => new Promise((resolve, reject) => {
-    loader.load("assets/model/" + d.id, (geo) => {
-      geo.computeBoundingBox();
-      const bb = geo.boundingBox.clone(), size = new THREE.Vector3(); bb.getSize(size);
-      geo.center(); geo.computeVertexNormals();
-      resolve({ d, geo, bb, size });
-    }, undefined, reject);
-  })));
+  const load = (f) => new Promise((res, rej) => loader.load("assets/model/asm/" + f + ".stl", (g) => { g.computeVertexNormals(); res(g); }, undefined, rej));
 
   // ---- 基板（外形を押し出し、表の文字の絵を重ねる） ----
   const pcbInfo = await (await fetch("assets/model/pcb.json")).json();
   const shape = new THREE.Shape(pcbInfo.outline.map((p) => new THREE.Vector2(p[0], p[1])));
   const pcbGeo = new THREE.ExtrudeGeometry(shape, { depth: 1.6, bevelEnabled: false });
-  pcbGeo.translate(0, 0, -0.8);
-  const pcb = new THREE.Mesh(pcbGeo, baseMat(0x1d6b46));
+  pcbGeo.translate(PCB_AT.x, PCB_AT.y, PCB_AT.z - 0.8);
   const silkMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 1, depthWrite: false });
-  const silk = new THREE.Mesh(new THREE.PlaneGeometry(pcbInfo.w, pcbInfo.h), silkMat);
-  silk.position.z = 0.82;
-  pcb.add(silk);
+  const silkGeo = new THREE.PlaneGeometry(pcbInfo.w, pcbInfo.h);
+  silkGeo.translate(PCB_AT.x, PCB_AT.y, PCB_AT.z + 0.82);
   new THREE.ImageLoader().load("assets/model/pcb-silk.svg", (img) => {
     const c = document.createElement("canvas"); c.width = Math.round(pcbInfo.w * 20); c.height = Math.round(pcbInfo.h * 20);
     c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
     const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
     silkMat.map = tex; silkMat.needsUpdate = true;
   });
-  pcb.userData.size = new THREE.Vector3(pcbInfo.w, pcbInfo.h, 1.6);
 
-  // ---- 部品のまとめ（名前・大きさ・位置） ----
+  // ---- 部品のまとめ（印刷データの座標のまま、部品ごとの中心を軸にする） ----
   const parts = [];
-  stl.forEach(({ d, geo, bb, size }) => {
-    const mesh = new THREE.Mesh(geo, baseMat(d.color));
-    const a = ASSEMBLY[d.id];
-    const c = new THREE.Vector3((bb.min.x + bb.max.x) / 2, (bb.min.y + bb.max.y) / 2, a.z + size.z / 2);
-    parts.push({ d, mesh, size, asm: c, flip: !!a.flip, extra: [] });
-  });
-  {
-    const a = ASSEMBLY.pcb;
-    parts.push({ d: defs[5], mesh: pcb, size: pcb.userData.size, asm: new THREE.Vector3(a.x, a.y, a.z + 0.8), flip: false, extra: [silkMat] });
+  const gbox = new THREE.Box3();
+  for (const d of PARTS) {
+    const entries = [];
+    for (const m of d.meshes) {
+      const geo = await load(m.f);
+      entries.push({ mesh: new THREE.Mesh(geo, baseMat(m.color)), geo });
+    }
+    if (d.pcb) {
+      entries.push({ mesh: new THREE.Mesh(pcbGeo, baseMat(0x1d6b46)), geo: pcbGeo });
+      entries.push({ mesh: new THREE.Mesh(silkGeo, silkMat), geo: silkGeo, extra: true });
+    }
+    const box = new THREE.Box3();
+    entries.forEach((e) => { e.geo.computeBoundingBox(); box.union(e.geo.boundingBox); });
+    gbox.union(box);
+    parts.push({ d, entries, box, mats: entries.map((e) => e.mesh.material) });
   }
-  // 組み上がった全体の中心を、原点に合わせる
-  const box = new THREE.Box3();
-  parts.forEach((p) => {
-    const hs = new THREE.Vector3(p.size.x / 2, p.size.y / 2, p.size.z / 2);
-    box.expandByPoint(p.asm.clone().sub(hs)).expandByPoint(p.asm.clone().add(hs));
-  });
-  const center = box.getCenter(new THREE.Vector3());
-  parts.forEach((p) => { p.asm.sub(center); group.add(p.mesh); });
-
-  // 分解図の位置と、ひっくり返す向き
-  const flipQ = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI);
-  const idQ = new THREE.Quaternion();
+  const gc = gbox.getCenter(new THREE.Vector3());
   const rand = (n) => { const x = Math.sin(n * 91.7) * 43758.5453; return x - Math.floor(x); };
   parts.forEach((p, i) => {
-    p.exploded = p.asm.clone(); p.exploded.z += EXPLODE[p.d.id] || 0;
+    const pivot = new THREE.Group();
+    const c = p.box.getCenter(new THREE.Vector3());
+    p.size = p.box.getSize(new THREE.Vector3());
+    p.entries.forEach((e) => { e.mesh.position.copy(c).negate(); pivot.add(e.mesh); });
+    p.mesh = pivot;
+    p.asm = c.clone().sub(gc);
+    p.exploded = p.asm.clone(); p.exploded.z += p.d.explode;
     p.start = new THREE.Vector3((rand(i + 1) - .5) * 560, (rand(i + 7) - .5) * 420, (rand(i + 3) - .5) * 360 + p.exploded.z);
     p.startQ = new THREE.Quaternion().setFromEuler(new THREE.Euler((rand(i + 11) - .5) * 5, (rand(i + 13) - .5) * 5, (rand(i + 17) - .5) * 5));
-    p.mats = [p.mesh.material].concat(p.extra);
+    group.add(pivot);
   });
+  const idQ = new THREE.Quaternion();
 
   // ---- 画面まわりの部品 ----
   const items = Array.from(document.querySelectorAll("#part-list li"));
@@ -120,7 +110,7 @@ async function init() {
     if (!info) return;
     if (selected < 0) { info.textContent = HINT; return; }
     const s = parts[selected].size, r = (v) => (Math.round(v * 10) / 10).toString().replace(/\.0$/, "");
-    info.innerHTML = "<b>" + parts[selected].d.name + "</b><em>" + r(s.x) + " × " + r(s.y) + " × " + r(s.z) + " mm</em>" + (parts[selected].d.id === "pcb" ? "（基板のデータ）" : "（印刷データの大きさ）");
+    info.innerHTML = "<b>" + parts[selected].d.name + "</b><em>" + r(s.x) + " × " + r(s.y) + " × " + r(s.z) + " mm</em>" + "（3Dデータの大きさ）";
   }
   items.forEach((li, k) => li.querySelector("button").addEventListener("click", () => select(k)));
   const xr = document.getElementById("xray");
@@ -133,7 +123,7 @@ async function init() {
     wide = window.innerWidth > 760;
     renderer.setSize(w, h, false);
     camera.aspect = w / h; camera.updateProjectionMatrix();
-    group.position.set(wide ? 46 : 0, wide ? 0 : -34, 0);
+    group.position.set(wide ? 70 : 0, wide ? 0 : -34, 0);
   };
   resize();
   window.addEventListener("resize", resize);
@@ -179,21 +169,24 @@ async function init() {
     const r = section.getBoundingClientRect();
     const q = reduce ? 1 : clamp(-r.top / (r.height - window.innerHeight), 0, 1);
     const gather = ease(clamp(q / 0.3, 0, 1));             // ばらばら → 分解図
-    const close = easeIO(clamp((q - 0.38) / 0.4, 0, 1));    // 分解図 → 1台に組み上がる
+    const closeRaw = clamp((q - 0.36) / 0.44, 0, 1);       // 分解図 → 1台に組み上がる（部品ごとに時間をずらす）
+    const close = easeIO(closeRaw);
 
     parts.forEach((p, i) => {
       const m = p.mesh;
-      m.position.lerpVectors(p.start, p.exploded, gather).lerp(p.asm, close);
-      // 向き：ばらばら → 印刷データの向き → （カバーは）ひっくり返して取り付け
+      // 部品ごとに、組み上がる順番をずらす（下から順に）
+      const cl = easeIO(clamp((closeRaw - p.d.delay * 0.55) / 0.45, 0, 1));
+      m.position.lerpVectors(p.start, p.exploded, gather).lerp(p.asm, cl);
       m.quaternion.slerpQuaternions(p.startQ, idQ, gather);
-      if (p.flip) m.quaternion.slerp(flipQ, close);
 
       const isSel = i === selected, any = selected >= 0;
-      const shell = p.d.id !== "pcb";
-      const tgtOpacity = any && !isSel ? 0.16 : (xray && shell && !isSel ? 0.2 : 1);
+      const tgtOpacity = any && !isSel ? 0.16 : (xray && p.d.shell && !isSel ? 0.18 : 1);
       const tgtEmis = isSel ? 0.55 + 0.2 * Math.sin(t * 4) : 0;
-      p.mats.forEach((mat) => { mat.opacity += (tgtOpacity - mat.opacity) * 0.15; });
-      p.mesh.material.emissiveIntensity += (tgtEmis - p.mesh.material.emissiveIntensity) * 0.2;
+      p.mats.forEach((mat) => {
+        mat.opacity += (tgtOpacity - mat.opacity) * 0.15;
+        if (mat.depthWrite !== undefined) mat.depthWrite = mat.opacity > 0.97 && mat !== silkMat;
+        if (mat.emissiveIntensity !== undefined) mat.emissiveIntensity += (tgtEmis - mat.emissiveIntensity) * 0.2;
+      });
       const sc = isSel ? 1.05 : 1;
       m.scale.x += (sc - m.scale.x) * 0.15; m.scale.y = m.scale.z = m.scale.x;
     });
@@ -202,7 +195,7 @@ async function init() {
 
     const orbit = (reduce ? 0.6 : q * Math.PI * 1.2) + dragX + (dragging ? 0 : t * 0.06);
     const tilt = 0.5 + dragY - q * 0.15;
-    const dist = (wide ? 640 : 780) * zoom * (1 - close * 0.42);
+    const dist = (wide ? 700 : 860) * zoom * (1 - close * 0.3);
     camera.position.set(Math.sin(orbit) * dist * Math.cos(tilt), Math.sin(tilt) * dist, Math.cos(orbit) * dist * Math.cos(tilt));
     camera.lookAt(0, 0, 0);
     group.rotation.x = -Math.PI / 2;
