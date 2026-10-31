@@ -1,10 +1,9 @@
 (function () {
   "use strict";
-  // 動きの設定：ふだんはOSの「視差効果を減らす」に従う。フッターのボタンで上書きできる
+  // 動きの設定：ふだんは「ふつう」（動きあり）。苦手な人は、フッターの「動き」ボタンで「少なめ」にできる
   var pref = "";
   try { pref = localStorage.getItem("tsuka-motion") || ""; } catch (e) {}
-  var osReduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var reduce = pref === "less" || (pref !== "more" && osReduce);
+  var reduce = pref === "less";
   document.documentElement.dataset.motion = reduce ? "reduce" : "full";
   var motionBtn = document.getElementById("motion-toggle");
   if (motionBtn) {

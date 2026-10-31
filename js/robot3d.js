@@ -7,7 +7,7 @@ const canvas = document.getElementById("robot");
 if (section && canvas) init().catch(() => { section.hidden = true; });
 
 async function init() {
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduce = document.documentElement.dataset.motion === "reduce";
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
