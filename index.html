@@ -16,8 +16,7 @@
 <script>
 document.documentElement.classList.add("js");
 try {
-  var pm = localStorage.getItem("tsuka-motion"), os = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var calm = pm === "less" || (pm !== "more" && os);
+  var calm = localStorage.getItem("tsuka-motion") === "less";
   if (!calm && !sessionStorage.getItem("tsuka-seen")) document.documentElement.classList.add("has-loader");
 } catch (e) {}
 </script>
