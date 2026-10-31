@@ -38,6 +38,30 @@
     setTimeout(close, 5000);          // 念のための保険
   }
 
+  /* ---- どのセクションも、スクロールでふわっと出す（AOS風）。段階的に遅らせる ---- */
+  document.querySelectorAll("section .wrap > *, .focus-sub, .team > *, .cards > *, .bento > *").forEach(function (el, i) {
+    if (el.classList.contains("reveal") || el.hasAttribute("data-fx") || el.classList.contains("words") || el.classList.contains("team") || el.classList.contains("cards") || el.classList.contains("bento")) return;
+    el.classList.add("reveal");
+  });
+
+  /* ---- チームカード：担当領域とひとことがあれば、ホバー時のカードに出す ---- */
+  document.querySelectorAll(".member").forEach(function (m) {
+    var more = m.querySelector(".more");
+    if (more && m.dataset.role) { var r = document.createElement("p"); r.className = "m-role"; r.textContent = m.dataset.role; more.insertBefore(r, more.firstChild); }
+    if (more && m.dataset.comment) { var c = document.createElement("p"); c.className = "m-comment"; c.textContent = m.dataset.comment; more.appendChild(c); }
+    m.addEventListener("click", function () { if (!fine) m.classList.toggle("open"); });
+  });
+
+  /* ---- ヒーローのガラスのカード：マウスに合わせて傾く ---- */
+  var glassEl = $("#glass"), stageEl = $("#hero-logo");
+  if (glassEl && stageEl && fine && !reduce) {
+    stageEl.addEventListener("pointermove", function (e) {
+      var r = stageEl.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
+      glassEl.style.setProperty("--ry", (px * 18).toFixed(2) + "deg"); glassEl.style.setProperty("--rx", (-py * 14).toFixed(2) + "deg");
+    });
+    stageEl.addEventListener("pointerleave", function () { glassEl.style.setProperty("--ry", "0deg"); glassEl.style.setProperty("--rx", "0deg"); });
+  }
+
   /* ---- Fade-and-rise on scroll ---- */
   var revealEls = document.querySelectorAll(".reveal");
   if ("IntersectionObserver" in window && !reduce) {
@@ -218,7 +242,8 @@
     bar.style.transform = "scaleX(" + (docH > 0 ? clamp(sy / docH, 0, 1) : 0).toFixed(4) + ")";
 
     if (heroLogo && !reduce && sy < vh * 1.4) {
-      heroLogo.style.transform = "translateY(" + (sy * 0.12).toFixed(1) + "px) scale(" + (1 + sy * 0.0002).toFixed(4) + ")";
+      heroLogo.style.translate = "0 " + (sy * 0.12).toFixed(1) + "px";
+      heroLogo.style.scale = (1 + sy * 0.0002).toFixed(4);
     }
 
     if (wordsEl && !reduce) {
