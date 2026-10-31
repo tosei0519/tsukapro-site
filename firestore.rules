@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // チームのデータ。下のメールアドレスでログインした人だけが、読み書きできる。
+    match /teams/tsukapro/modules/{module} {
+      allow read, write: if request.auth != null
+        && request.auth.token.email_verified != null
+        && request.auth.token.email in [
+          "member1@example.com",
+          "member2@example.com",
+          "member3@example.com"
+        ];
+    }
+    // それ以外は、すべて禁止
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
