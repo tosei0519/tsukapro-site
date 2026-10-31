@@ -483,55 +483,5 @@ html[data-motion="reduce"] .guide svg { animation: none; }
 .hero-title .l2 { white-space: nowrap; }
 .bx.dig .num.sm, .bx.robo .num.sm { font-size: clamp(1.2rem, 1.9vw, 1.6rem); word-break: keep-all; }
 
-/* ===== v6: 写真の枠（写真があれば表示、なければ代わりの表示） ===== */
-.ph { position: relative; overflow: hidden; margin: 0; border-radius: 26px; background: var(--tint); }
-.ph > img, .ph > video { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
-.ph:hover > img, .ph:hover > video { transform: scale(1.05); }
-.ph.has-photo .fb { display: none; }
-.ph-opt:not(.has-photo) { display: none; }
-.photo-edit .ph-opt { display: block; }
-.photo-edit [data-src] { outline: 3px dashed var(--orange); outline-offset: -3px; }
-.photo-edit .ph::after, .photo-edit .bx[data-src]::after { content: attr(data-note) "  /  " attr(data-src); position: absolute; left: 8px; right: 8px; bottom: 8px; z-index: 5; padding: 6px 10px; border-radius: 8px; background: rgba(10, 34, 53, .88); color: #ffd37a; font-size: .68rem; line-height: 1.5; pointer-events: none; }
-.photo-edit .ph.has-photo::after, .photo-edit .bx.has-photo::after { background: rgba(31, 143, 95, .9); color: #fff; }
-
-/* hero */
-.hero-photo { position: absolute; z-index: 0; width: 56%; aspect-ratio: 4 / 5; left: -2%; top: 4%; border-radius: 36px; transform: rotate(-7deg); box-shadow: 0 40px 80px rgba(20, 60, 100, .28); }
-.hero-photo.has-photo ~ .glass { transform: translate(18%, 8%) rotateX(var(--rx)) rotateY(var(--ry)); width: min(360px, 74%); }
-.hero-photo.has-photo ~ .chip-f.f1 { top: 2%; }
-.glass { z-index: 1; }
-
-/* steps */
-.card.step { position: relative; overflow: hidden; padding: 0 0 36px; }
-.card.step h3, .card.step p { padding: 0 30px; }
-.card.step h3 { margin-top: 22px; }
-.step-ph { aspect-ratio: 4 / 3; border-radius: 0; }
-.step-ph .fb { position: absolute; inset: 0; display: grid; place-items: center; }
-.step-ph .fb.o { background: radial-gradient(circle at 30% 20%, #ffe2bd, #ffc27a 70%); }
-.step-ph .fb.b { background: radial-gradient(circle at 30% 20%, #d4f1fb, #8fd6f0 70%); }
-.step-ph .ico { width: 104px; height: 104px; margin: 0; filter: drop-shadow(0 14px 14px rgba(0, 0, 0, .15)); }
-.card.step .chip { position: absolute; left: 18px; top: 18px; z-index: 3; box-shadow: 0 8px 18px rgba(0, 0, 0, .2); }
-.card.step:hover .step-ph .ico { transform: translateY(-4px) rotate(-6deg) scale(1.08); }
-
-/* dev gallery */
-.dev { padding-top: 0; padding-bottom: 120px; }
-.dev[hidden] { display: none; }
-.dev-gallery { display: grid; grid-template-columns: 1.3fr 1fr; grid-auto-rows: 240px; gap: 16px; margin-top: 24px; }
-.dev-gallery .ph { background: linear-gradient(150deg, #dbe7f0, #c5d6e3); min-height: 0; }
-.dev-a { grid-row: span 2; }
-.dev-gallery figcaption { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 56px 22px 18px; color: #fff; font-family: var(--font-display); font-weight: 700; background: linear-gradient(180deg, transparent, rgba(10, 34, 53, .8)); }
-
-/* bento photos */
-.bx.has-photo { background-image: linear-gradient(180deg, rgba(10, 34, 53, .1) 0%, rgba(10, 34, 53, .82) 78%), var(--ph); background-size: cover; background-position: center; color: #fff; }
-.bx.has-photo .num, .bx.has-photo .k, .bx.has-photo .d { color: #fff; -webkit-text-fill-color: #fff; background: none; }
-.bx.has-photo .deco { display: none; }
-
-@media (max-width: 760px) {
-  .dev-gallery { grid-template-columns: 1fr; grid-auto-rows: 220px; }
-  .dev-a { grid-row: auto; }
-  .hero-photo { width: 62%; left: -4%; }
-  .card.step h3, .card.step p { padding: 0 24px; }
-}
-.dev-gallery[data-count="1"] { grid-template-columns: 1fr; grid-auto-rows: 420px; }
-.dev-gallery[data-count="2"] { grid-template-columns: 1fr 1fr; grid-auto-rows: 320px; }
-.dev-gallery[data-count="1"] .dev-a, .dev-gallery[data-count="2"] .dev-a { grid-row: auto; }
-@media (max-width: 760px) { .dev-gallery[data-count] { grid-template-columns: 1fr; grid-auto-rows: 240px; } }
+#xray { font-size: .7rem; font-weight: 700; letter-spacing: .04em; }
+#xray.on { background: var(--orange); border-color: var(--orange); box-shadow: 0 0 22px rgba(247, 147, 30, .6); }
