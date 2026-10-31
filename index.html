@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&family=Zen+Maru+Gothic:wght@500;700;900&display=swap">
-<link rel="stylesheet" href="css/style.css?v=3">
+<link rel="stylesheet" href="css/style.css?v=5">
 <script>
 document.documentElement.classList.add("js");
 try {
@@ -62,19 +62,28 @@ try {
   <section class="hero" id="hero">
     <canvas class="bricks" id="bricks" aria-hidden="true"></canvas>
     <div class="hero-in">
-      <p class="eyebrow" data-fx="scramble">掴めるプログラミング</p>
-      <h1 class="hero-title" aria-label="画面で学ぶ前に、手でワクワクを。">
-        <span class="line" data-fx="blur" data-by="char">画面で学ぶ前に、</span><br>
-        <span class="line grad" data-fx="blur" data-by="char">手でワクワクを。</span>
-      </h1>
-      <p class="hero-sub reveal" data-delay="3" data-fx="vprox">ブロックを手で並べて、ロボットを動かす。<br class="sp-hide">プログラミングの最初の「できた！」を、つくります。</p>
-      <p class="rotator reveal" data-delay="3">つかプロは、<span class="rot" data-fx="rotate" data-words="ブロックを並べて|ロボットを動かして|「できた！」を体験する"></span>教材です。</p>
-      <div class="hero-cta reveal" data-delay="4">
-        <a class="btn primary magnetic" href="#about">つかプロを知る</a>
-        <a class="btn ghost magnetic" href="#how">しくみを見る</a>
+      <div class="hero-copy">
+        <p class="eyebrow" data-fx="scramble">掴めるプログラミング</p>
+        <h1 class="hero-title" aria-label="画面で学ぶ前に、手でワクワクを。">
+          <span class="line l1" data-fx="blur" data-by="char">画面で学ぶ前に、</span>
+          <span class="line l2 grad" data-fx="blur" data-by="char"><span class="big">手で</span>ワクワクを。</span>
+        </h1>
+        <p class="hero-sub reveal" data-delay="3" data-fx="vprox">ブロックを手で並べて、ロボットを動かす。<br class="sp-hide">プログラミングの最初の「できた！」を、つくります。</p>
+        <p class="rotator reveal" data-delay="3">つかプロは、<span class="rot" data-fx="rotate" data-words="ブロックを並べて|ロボットを動かして|「できた！」を体験する"></span>教材です。</p>
+        <div class="hero-cta reveal" data-delay="4">
+          <a class="btn primary magnetic" href="#about"><span>つかプロを知る</span><i class="arr" aria-hidden="true">→</i></a>
+          <a class="btn ghost magnetic" href="#how"><span>しくみを見る</span><i class="arr" aria-hidden="true">↓</i></a>
+        </div>
       </div>
-      <div class="hero-logo reveal" data-delay="5" id="hero-logo">
-        <img src="assets/logo.png" alt="つかプロのロゴ。オレンジと青のブロックがつながり、電球がひらめいている" width="520" height="520">
+      <div class="hero-stage reveal" data-delay="3" id="hero-logo">
+        <div class="orb o1" aria-hidden="true"></div>
+        <div class="orb o2" aria-hidden="true"></div>
+        <div class="glass" id="glass">
+          <img src="assets/logo.png" alt="つかプロのロゴ。オレンジと青のブロックがつながり、電球がひらめいている" width="520" height="520">
+        </div>
+        <span class="chip-f f1">3Dプリントのロボット</span>
+        <span class="chip-f f2">ブロックが命令になる</span>
+        <span class="chip-f f3">IPPO 採択プロジェクト</span>
       </div>
     </div>
   </section>
@@ -92,7 +101,7 @@ try {
   </section>
 
   <!-- Statement: scroll-linked words -->
-  <section class="dark statement" id="about">
+  <section class="light statement" id="about">
     <div class="wrap">
       <p class="label reveal">つかプロとは</p>
       <p class="words" data-words>Scratchなど画面の上で学び始めた子の中には、「何をしているか分からないまま終わってしまった」という経験から、プログラミングを苦手に感じてしまう子がいます。つかプロは、その前に手で触れる入口をつくります。</p>
@@ -152,24 +161,35 @@ try {
   <!-- 3D robot parts -->
   <section class="parts" id="parts" aria-label="ロボットの部品を3Dで見るセクション">
     <div class="parts-stage">
-      <canvas id="robot" aria-hidden="true"></canvas>
+      <canvas id="robot" aria-label="ロボットの部品の3Dモデル。ドラッグで回転できます"></canvas>
+      <div class="viewer-ui">
+        <div class="guide" aria-hidden="true">
+          <svg viewBox="0 0 48 48" width="34" height="34"><ellipse cx="24" cy="24" rx="19" ry="8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-dasharray="4 4"/><path d="M40 20l4 5-6 1" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="24" r="5" fill="currentColor"/></svg>
+          <div><b>360° Rotate &amp; Zoom</b><span>ドラッグで回転 ／ ＋－でズーム</span></div>
+        </div>
+        <div class="zoom">
+          <button type="button" id="z-in" aria-label="拡大">＋</button>
+          <button type="button" id="z-out" aria-label="縮小">－</button>
+          <button type="button" id="z-reset" aria-label="もとに戻す">⟲</button>
+        </div>
+      </div>
       <div class="parts-copy">
         <p class="label">ロボット</p>
         <h2 class="section-title">3Dプリントで作る、<br>ロボットの部品。</h2>
         <ul class="part-list" id="part-list">
-          <li><i style="background:#f7931e"></i>シャーシ</li>
-          <li><i style="background:#5bc2e7"></i>カバー</li>
-          <li><i style="background:#e8eaee"></i>モーターキャップ</li>
-          <li><i style="background:#d9740f"></i>電池ふた</li>
-          <li><i style="background:#2b3a4a"></i>バイザー</li>
+          <li><button type="button" data-i="0"><i style="background:#f7931e"></i>シャーシ</button></li>
+          <li><button type="button" data-i="1"><i style="background:#5bc2e7"></i>カバー</button></li>
+          <li><button type="button" data-i="2"><i style="background:#e8eaee"></i>モーターキャップ</button></li>
+          <li><button type="button" data-i="3"><i style="background:#d9740f"></i>電池ふた</button></li>
+          <li><button type="button" data-i="4"><i style="background:#2b3a4a"></i>バイザー</button></li>
         </ul>
-        <p class="hint">スクロールで部品が集まります。<span class="pc-only">ドラッグで回せます。</span></p>
+        <div class="part-info" id="part-info" aria-live="polite">部品の名前を押すと、その部品が光ります。</div>
       </div>
     </div>
   </section>
 
   <!-- Why -->
-  <section class="dark why" id="why">
+  <section class="tint why" id="why">
     <svg class="circuit" id="circuit" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <path d="M0 120 H260 L330 190 H620 L690 120 H1200" />
       <path class="b" d="M0 330 H180 L260 410 H540 L600 350 H900 L980 430 H1200" />
@@ -184,66 +204,77 @@ try {
     </div>
   </section>
 
-  <!-- Record: horizontal scroll -->
-  <section class="hscroll" id="record">
-    <div class="h-sticky">
-      <div class="h-head">
-        <p class="label">実績</p>
-        <h2 class="section-title" data-fx="blur">ものづくりで、挑戦してきた。</h2>
-      </div>
-      <div class="h-track" id="h-track">
-        <article class="h-card o">
-          <p class="k">ユニガチャ</p>
-          <h3>デジタルと<br>アナログの融合</h3>
-          <p>中学生の頃からロボット製作に取り組み、デジタルとアナログの融合をテーマにした「ユニガチャ」を進めてきました。</p>
-        </article>
-        <article class="h-card b">
-          <p class="k">熊本デジタル作品コンテスト</p>
-          <h3 class="big">総合<br>準グランプリ</h3>
-          <p>「ユニガチャ」で受賞しました。</p>
-        </article>
-        <article class="h-card o">
-          <p class="k">創造アイデアロボットコンテスト</p>
-          <h3 class="big">全国大会<br>出場</h3>
-          <p>アイデアを形にするロボットで、全国の舞台に立ちました。</p>
-        </article>
-        <article class="h-card b">
+  <!-- Record: bento grid -->
+  <section class="light record" id="record">
+    <div class="wrap">
+      <p class="label reveal">実績</p>
+      <h2 class="section-title" data-fx="blur">ものづくりで、<br>挑戦してきた。</h2>
+      <div class="bento">
+        <article class="bx wro reveal">
           <p class="k">WRO（World Robot Olympiad）</p>
-          <h3 class="big"><span data-count="3">0</span><small>年間</small></h3>
-          <p>2024年から2026年にかけて、全国大会に出場しました。</p>
+          <p class="num"><span data-count="3">0</span><small>年間</small></p>
+          <p class="d">2024年から2026年にかけて、全国大会に出場しました。</p>
+          <svg class="deco" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" fill="none" stroke="currentColor" stroke-width="6" stroke-dasharray="10 8"/><circle cx="60" cy="60" r="28" fill="currentColor" opacity=".25"/></svg>
         </article>
-        <article class="h-card o">
+        <article class="bx intl reveal" data-delay="1">
           <p class="k">国際大会</p>
-          <h3 class="big">フィリピン<br>へ</h3>
-          <p>WRO OPEN CHAMPIONSHIP APAC PHILIPPINES に出場しました。</p>
+          <p class="num sm">PHILIPPINES</p>
+          <p class="d">WRO OPEN CHAMPIONSHIP APAC PHILIPPINES に出場しました。</p>
         </article>
-        <article class="h-card dk">
+        <article class="bx dig reveal" data-delay="2">
+          <p class="k">熊本デジタル作品コンテスト</p>
+          <p class="num sm">総合<br>準グランプリ</p>
+          <p class="d">「ユニガチャ」で受賞。</p>
+        </article>
+        <article class="bx robo reveal" data-delay="3">
+          <p class="k">創造アイデアロボットコンテスト</p>
+          <p class="num sm">全国大会<br>出場</p>
+          <p class="d">アイデアを形にしたロボットで。</p>
+        </article>
+        <article class="bx uni reveal">
+          <p class="k">ユニガチャ</p>
+          <p class="num sm">デジタル × アナログ</p>
+          <p class="d">中学生の頃からロボット製作に取り組み、デジタルとアナログの融合をテーマに進めてきたプロジェクトです。</p>
+        </article>
+        <article class="bx ippo reveal" data-delay="1">
           <p class="k">そして、つかプロ</p>
-          <h3>子どもたちの<br>「できた！」を<br>つくる。</h3>
-          <p>熊本版未踏的プロジェクト IPPO に採択されました。</p>
+          <p class="num sm">IPPO 採択</p>
+          <p class="d">熊本版未踏的プロジェクト IPPO に採択。子どもたちの「できた！」をつくります。</p>
         </article>
       </div>
     </div>
   </section>
 
   <!-- Team -->
-  <section class="dark team-sec" id="team">
-    <div class="team-glow" aria-hidden="true"></div>
+  <!-- 担当領域とひとことは、各メンバーの data-role / data-comment に書くと、ホバー時のカードに出ます（例: data-role="3D Design" data-comment="…"） -->
+  <section class="light team-sec" id="team">
     <div class="wrap">
       <p class="label reveal">チーム</p>
       <h2 class="section-title" data-fx="split">熊本県立宇土高等学校<br>1年生の3人。</h2>
       <div class="team">
-        <article class="member tilt reveal">
+        <article class="member tilt reveal" tabindex="0" data-role="" data-comment="">
           <div class="photo"><img src="assets/team/katsuno.jpg" alt="勝野 董成の写真" width="800" height="1000" loading="lazy"></div>
           <div class="who"><h3>勝野 董成</h3><p>Member</p></div>
+          <div class="more">
+            <p class="m-school">熊本県立宇土高等学校 1年</p>
+            <p class="m-tag">IPPO 採択プロジェクト「つかプロ」の開発メンバー</p>
+          </div>
         </article>
-        <article class="member tilt reveal" data-delay="1">
+        <article class="member tilt reveal" data-delay="1" tabindex="0" data-role="" data-comment="">
           <div class="photo"><img src="assets/team/nakahara.jpg" alt="中原 蒼介の写真" width="800" height="1000" loading="lazy"></div>
           <div class="who"><h3>中原 蒼介</h3><p>Member</p></div>
+          <div class="more">
+            <p class="m-school">熊本県立宇土高等学校 1年</p>
+            <p class="m-tag">IPPO 採択プロジェクト「つかプロ」の開発メンバー</p>
+          </div>
         </article>
-        <article class="member tilt reveal" data-delay="2">
+        <article class="member tilt reveal" data-delay="2" tabindex="0" data-role="" data-comment="">
           <div class="photo"><img src="assets/team/ueda.jpg" alt="上田 英雅の写真" width="800" height="1000" loading="lazy"></div>
           <div class="who"><h3>上田 英雅</h3><p>Member</p></div>
+          <div class="more">
+            <p class="m-school">熊本県立宇土高等学校 1年</p>
+            <p class="m-tag">IPPO 採択プロジェクト「つかプロ」の開発メンバー</p>
+          </div>
         </article>
       </div>
       <p class="note reveal">担当プロジェクトマネージャー：杉本 達應</p>
@@ -256,7 +287,7 @@ try {
       <p class="label reveal">つかプロの挑戦の場</p>
       <h2 class="section-title" data-fx="blur">熊本版未踏的プロジェクト<br><span class="agrad">IPPO（一歩）</span></h2>
       <p class="lead reveal shiny" data-delay="2">つかプロは、熊本版未踏的プロジェクト IPPO の採択プロジェクトです。</p>
-      <a class="btn primary magnetic reveal" data-delay="3" href="https://mitouteki-kumamoto.com/project/mt6PEztj" target="_blank" rel="noopener">IPPO公式サイトのプロジェクト紹介を見る</a>
+      <a class="btn primary magnetic reveal" data-delay="3" href="https://mitouteki-kumamoto.com/project/mt6PEztj" target="_blank" rel="noopener"><span>IPPO公式サイトのプロジェクト紹介を見る</span><i class="arr" aria-hidden="true">↗</i></a>
     </div>
   </section>
 
@@ -282,8 +313,8 @@ try {
   </div>
 </footer>
 
-<script src="js/main.js?v=3"></script>
-<script src="js/textfx.js?v=3"></script>
-<script type="module" src="js/robot3d.js?v=3"></script>
+<script src="js/main.js?v=5"></script>
+<script src="js/textfx.js?v=5"></script>
+<script type="module" src="js/robot3d.js?v=5"></script>
 </body>
 </html>
