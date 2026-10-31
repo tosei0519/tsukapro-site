@@ -7,19 +7,21 @@ const section = document.getElementById("parts");
 const canvas = document.getElementById("robot");
 if (section && canvas) init().catch(() => { section.hidden = true; });
 
-/* 組み上がったときの位置（mm）。印刷データは、高さ(z)の位置が失われているので、
-   重ね方は「推定」です。実機と違うときは、ここの数字を変えてください。
-   z = その部品の下面の高さ。flip = 上下をひっくり返して取り付ける。x,y は印刷データの位置をそのまま使う。 */
+/* 組み上がったときの位置（mm）。
+   x,y は印刷データの位置をそのまま使っています。
+   基板の位置は、基板の取り付け穴（直径2.2mm）が、シャーシの2本のピン（x=-21 と 23.5）と一致することから決めた確かな値です。
+   高さ(z)は印刷データから失われているため、重ね方は「推定」です。実機と違うときは、ここの数字を変えてください。
+   z = その部品の下面の高さ。flip = 上下をひっくり返して取り付ける。 */
 const ASSEMBLY = {
-  "1_chassis.stl":     { z: 0 },                 // 土台（脚が下、板が上）
-  "3_motor_cap.stl":   { z: 15.5 },              // 土台の下側、中央
-  "2_cover.stl":       { z: 21.5, flip: true },  // 上の板。柱を下向きにして、土台に立てる
-  "4_battery_lid.stl": { z: 46 },                // 電池ふた（上の板の上）
-  "5_visor.stl":       { z: 48 },                // バイザー
-  pcb:                 { z: 22.5, x: 0, y: -29 } // 基板：土台の中央、2枚の板のあいだ
+  "1_chassis.stl":     { z: 0 },                    // 土台（脚が下、板が上）。上面は z=21.5、ピンは z=25.7 まで
+  "3_motor_cap.stl":   { z: 15.5 },                 // 土台の下側、中央
+  pcb:                 { z: 21.5, x: 0, y: -25.8 }, // 基板：土台の板の上。ピン2本が穴を貫く（確かな位置）
+  "2_cover.stl":       { z: 23.6 },                 // 上の板（基板の上）。柱は上向き
+  "4_battery_lid.stl": { z: 48.1 },                 // 電池ふた（カバーの柱の上）
+  "5_visor.stl":       { z: 50.1 }                  // バイザー
 };
 // 分解図のとき、組み上がりの位置から、上下にどれだけ離すか（mm）
-const EXPLODE = { "3_motor_cap.stl": -85, "1_chassis.stl": -48, pcb: 6, "2_cover.stl": 52, "4_battery_lid.stl": 92, "5_visor.stl": 128 };
+const EXPLODE = { "3_motor_cap.stl": -85, "1_chassis.stl": -48, pcb: 4, "2_cover.stl": 42, "4_battery_lid.stl": 88, "5_visor.stl": 124 };
 
 async function init() {
   const reduce = document.documentElement.dataset.motion === "reduce";
