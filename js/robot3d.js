@@ -5,6 +5,8 @@ import { STLLoader } from "three/addons/loaders/STLLoader.js";
 
 const section = document.getElementById("parts");
 const canvas = document.getElementById("robot");
+const pin = document.getElementById("parts-pin") || section;
+const caps = Array.from(document.querySelectorAll("#r-caps span"));
 if (section && canvas) init().catch(() => { section.hidden = true; });
 
 /* 3Dデータ（assets/model/asm/*.stl）は、すべて「組み上がった位置」のまま書き出したもの（mm、z が上、+y が前）。
@@ -120,10 +122,11 @@ async function init() {
   let w = 0, h = 0, wide = true;
   const resize = () => {
     w = canvas.clientWidth; h = canvas.clientHeight;
-    wide = window.innerWidth > 760;
+    wide = window.innerWidth > 900;
     renderer.setSize(w, h, false);
     camera.aspect = w / h; camera.updateProjectionMatrix();
-    group.position.set(wide ? 70 : 0, wide ? 0 : -34, 0);
+    // 絵を、広い画面では右へ、せまい画面では少し下へ寄せる（左や上の文字と重ならないように）
+    if (wide) camera.setViewOffset(w, h, -w * 0.2, 0, w, h); else camera.setViewOffset(w, h, 0, -h * 0.05, w, h);
   };
   resize();
   window.addEventListener("resize", resize);
@@ -166,7 +169,7 @@ async function init() {
     if (!visible || document.hidden) return;
     t += 0.016;
     zoom += (zoomT - zoom) * 0.14;
-    const r = section.getBoundingClientRect();
+    const r = pin.getBoundingClientRect();
     const q = reduce ? 1 : clamp(-r.top / (r.height - window.innerHeight), 0, 1);
     const gather = ease(clamp(q / 0.3, 0, 1));             // ばらばら → 分解図
     const closeRaw = clamp((q - 0.36) / 0.44, 0, 1);       // 分解図 → 1台に組み上がる（部品ごとに時間をずらす）
@@ -190,6 +193,9 @@ async function init() {
       const sc = isSel ? 1.05 : 1;
       m.scale.x += (sc - m.scale.x) * 0.15; m.scale.y = m.scale.z = m.scale.x;
     });
+    // 見出しの3行が、進み具合に合わせて順に明るくなる
+    const stage = q < 0.3 ? 0 : q < 0.7 ? 1 : 2;
+    caps.forEach((c, i) => c.classList.toggle("on", reduce || i <= stage));
     const shown = Math.floor(clamp((q - 0.08) / 0.45, 0, 1) * (items.length + 0.999));
     items.forEach((li, i) => li.classList.toggle("on", i < shown || reduce));
 
